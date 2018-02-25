@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.miner.out.jielin_fast.dao.SysRoleDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.miner.out.jielin_fast.entity.SysRoleEntity" id="sysRoleMap">
+        <result property="id" column="id"/>
+        <result property="roleName" column="role_name"/>
+        <result property="roleDesc" column="role_desc"/>
+    </resultMap>
+
+	<select id="queryObject" resultType="com.miner.out.jielin_fast.entity.SysRoleEntity">
+		select * from sys_role where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="com.miner.out.jielin_fast.entity.SysRoleEntity">
+		select * from sys_role
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${order} ${sidx}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from sys_role 
+	</select>
+	 
+	<insert id="save" parameterType="com.miner.out.jielin_fast.entity.SysRoleEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into sys_role
+		<set>
+			<if test="roleName != null">`role_name` = #{roleName}, </if>
+			<if test="roleDesc != null">`role_desc` = #{roleDesc}</if>
+		</set>
+	</insert>
+	 
+	<update id="update" parameterType="com.miner.out.jielin_fast.entity.SysRoleEntity">
+		update sys_role 
+		<set>
+			<if test="roleName != null">`role_name` = #{roleName}, </if>
+			<if test="roleDesc != null">`role_desc` = #{roleDesc}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from sys_role where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from sys_role where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

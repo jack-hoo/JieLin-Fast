@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.miner.out.jielin_fast.dao.SysAuthorityDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.miner.out.jielin_fast.entity.SysAuthorityEntity" id="sysAuthorityMap">
+        <result property="id" column="id"/>
+        <result property="authCode" column="auth_code"/>
+        <result property="authName" column="auth_name"/>
+        <result property="url" column="url"/>
+        <result property="method" column="method"/>
+        <result property="resourceType" column="resource_type"/>
+        <result property="resourceName" column="resource_name"/>
+        <result property="createTime" column="create_time"/>
+
+    </resultMap>
+
+    <select id="queryObject" resultType="com.miner.out.jielin_fast.entity.SysAuthorityEntity">
+		select * from sys_authority where id = #{value}
+	</select>
+    <!--通过角色id查询对应的权限列表-->
+    <select id="findAuthsByRoleId" resultType="com.miner.out.jielin_fast.entity.SysAuthorityEntity">
+		SELECT
+            a.*
+        FROM
+           sys_authority  a
+        LEFT JOIN sys_role_auth b ON a.id = b.auth_id
+        WHERE
+	        b.role_id = #{VALUE}
+	</select>
+    <select id="queryList" resultType="com.miner.out.jielin_fast.entity.SysAuthorityEntity">
+        select * from sys_authority
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${order} ${sidx}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="queryTotal" resultType="int">
+		select count(*) from sys_authority 
+	</select>
+
+    <insert id="save" parameterType="com.miner.out.jielin_fast.entity.SysAuthorityEntity" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into sys_authority
+        <set>
+            <if test="authCode != null">`auth_code` = #{authCode},</if>
+            <if test="authName != null">`auth_name` = #{authName},</if>
+            <if test="url != null">`url` = #{url},</if>
+            <if test="method != null">`method` = #{method},</if>
+            <if test="createTime != null">`create_time` = #{createTime},</if>
+            <if test="resourceType != null">`resource_type` = #{resourceType},</if>
+            <if test="resourceName != null">`resource_name` = #{resourceName}</if>
+
+        </set>
+    </insert>
+
+    <update id="update" parameterType="com.miner.out.jielin_fast.entity.SysAuthorityEntity">
+        update sys_authority
+        <set>
+            <if test="authCode != null">`auth_code` = #{authCode},</if>
+            <if test="authName != null">`auth_name` = #{authName},</if>
+            <if test="url != null">`url` = #{url},</if>
+            <if test="method != null">`method` = #{method},</if>
+            <if test="createTime != null">`create_time` = #{createTime},</if>
+            <if test="resourceType != null">`resource_type` = #{resourceType},</if>
+            <if test="resourceName != null">`resource_name` = #{resourceName}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+		delete from sys_authority where id = #{value}
+	</delete>
+
+    <delete id="deleteBatch">
+        delete from sys_authority where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
