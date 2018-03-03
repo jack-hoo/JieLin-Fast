@@ -20,6 +20,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,8 +51,20 @@ public class AuthController {
     @ApiOperation(value = "用户登录", response = Result.class)
     public Result login(@RequestBody @Validated({Register.class}) SysUserDTO userDTO) {
         String token = userService.login(userDTO.getAccount(), userDTO.getPassword());
+        SysUserEntity userByAccount = null;
+        if (!StringUtils.isEmpty(token)) {
+
+            userByAccount = userService.findUserByAccount(userDTO.getAccount());
+        }
         Map<String, Object> result = new HashMap<>();
+        Map<String, Object> userInfo = new HashMap<>();
+        userInfo.put("role", userByAccount.getRoleId());
+        userInfo.put("name", userByAccount.getUsername());
+        userInfo.put("account", userByAccount.getAccount());
+
+        //返回用户信息
         result.put("token", token);
+        result.put("userInfo",userInfo);
         return ResultUtil.success(result);
     }
 

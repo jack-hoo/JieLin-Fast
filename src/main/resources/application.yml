@@ -43,6 +43,7 @@ spring:
             min-idle: 5       # 连接池中的最小空闲连接
     messages:
       encoding: utf-8
+
 # Mybatis配置
 mybatis:
     mapperLocations: classpath:mapper/**/*.xml

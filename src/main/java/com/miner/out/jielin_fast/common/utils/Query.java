@@ -25,9 +25,9 @@ public class Query extends LinkedHashMap<String, Object> {
         this.putAll(params);
 
         //分页参数
-        if (params.get("page") != null && params.get("size")!= null){
+        if (params.get("page") != null && params.get("limit")!= null){
             this.page = Integer.parseInt(params.get("page").toString());
-            this.size = Integer.parseInt(params.get("size").toString());
+            this.size = Integer.parseInt(params.get("limit").toString());
             this.put("offset", (page - 1) * size);
             this.put("page", page);
             this.put("limit", size);

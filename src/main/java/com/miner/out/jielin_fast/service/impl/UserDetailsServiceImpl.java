@@ -11,6 +11,7 @@ import com.miner.out.jielin_fast.common.utils.UserDetailsUtil;
 import com.miner.out.jielin_fast.dao.SysAuthorityDao;
 import com.miner.out.jielin_fast.dao.SysRoleDao;
 import com.miner.out.jielin_fast.dao.SysUserDao;
+import com.miner.out.jielin_fast.dto.RoleAuthorityDTO;
 import com.miner.out.jielin_fast.entity.SysAuthorityEntity;
 import com.miner.out.jielin_fast.entity.SysRoleEntity;
 import com.miner.out.jielin_fast.entity.SysUserEntity;
@@ -48,7 +49,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         //通过角色id找到角色信息
         SysRoleEntity sysRoleEntity = sysRoleDao.queryObject(user.getRoleId());
         //通过角色id找到对应的权限列表
-        List<SysAuthorityEntity> auths = sysAuthorityDao.findAuthsByRoleId(user.getRoleId());
+        List<RoleAuthorityDTO> auths = sysAuthorityDao.findAuthsByRoleId(user.getRoleId());
 
         List<GrantedAuthority> authorities = new ArrayList<>();
         //添加角色

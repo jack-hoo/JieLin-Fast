@@ -41,7 +41,7 @@ public class SysRoleController {
 			int total = sysRoleService.queryTotal(query);
 			
 			PageUtils pageUtil = new PageUtils(sysRoleList, total, query.getSize(), query.getPage());
-            return new Result("pages", pageUtil);
+            return new Result("page", pageUtil);
 		}else{
 			List<SysRoleEntity> sysRoleList = sysRoleService.queryList(query);
 			return new Result("list", sysRoleList);

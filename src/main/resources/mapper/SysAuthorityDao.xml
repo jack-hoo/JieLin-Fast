@@ -20,9 +20,9 @@
 		select * from sys_authority where id = #{value}
 	</select>
     <!--通过角色id查询对应的权限列表-->
-    <select id="findAuthsByRoleId" resultType="com.miner.out.jielin_fast.entity.SysAuthorityEntity">
+    <select id="findAuthsByRoleId" resultType="com.miner.out.jielin_fast.dto.RoleAuthorityDTO">
 		SELECT
-            a.*
+            a.*,b.id as role_auth_id
         FROM
            sys_authority  a
         LEFT JOIN sys_role_auth b ON a.id = b.auth_id
@@ -44,8 +44,19 @@
         </if>
     </select>
 
-    <select id="queryTotal" resultType="int">
-		select count(*) from sys_authority 
+    <select id="queryTotal" resultType="java.lang.Integer">
+		select count(*) from sys_authority
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${order} ${sidx}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
 	</select>
 
     <insert id="save" parameterType="com.miner.out.jielin_fast.entity.SysAuthorityEntity" useGeneratedKeys="true"

@@ -9,9 +9,9 @@ spring:
 #        username: root
 #        password: uAiqwVwjJ8-i
 #            second:  #数据源2
-        url: jdbc:mysql://localhost:3306/jielin_fast?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
+        url: jdbc:mysql://120.78.143.143:3306/jielin_fast?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
         username: root
-        password: 123456
+        password: uAiqwVwjJ8-i
         initial-size: 10
         max-active: 100
         min-idle: 10

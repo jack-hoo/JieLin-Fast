@@ -40,7 +40,7 @@ public interface BaseDao<T> {
 
     List<T> queryList(Object id);
 
-    int queryTotal(Map<String, Object> map);
+    Integer queryTotal(Map<String, Object> map);
 
-    int queryTotal();
+    Integer queryTotal();
 }

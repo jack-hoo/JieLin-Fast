@@ -1,5 +1,6 @@
 package com.miner.out.jielin_fast.dao;
 
+import com.miner.out.jielin_fast.dto.RoleAuthorityDTO;
 import com.miner.out.jielin_fast.entity.SysAuthorityEntity;
 import com.miner.out.jielin_fast.dao.BaseDao;
 import org.apache.ibatis.annotations.Mapper;
@@ -17,5 +18,5 @@ import java.util.List;
 @Mapper
 @Repository
 public interface SysAuthorityDao extends BaseDao<SysAuthorityEntity> {
-    List<SysAuthorityEntity> findAuthsByRoleId(Integer roleId);
+    List<RoleAuthorityDTO> findAuthsByRoleId(Integer roleId);
 }

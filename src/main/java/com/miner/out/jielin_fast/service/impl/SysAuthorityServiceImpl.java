@@ -1,5 +1,6 @@
 package com.miner.out.jielin_fast.service.impl;
 
+import com.miner.out.jielin_fast.dto.RoleAuthorityDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,7 @@ public class SysAuthorityServiceImpl implements SysAuthorityService {
 	private SysAuthorityDao sysAuthorityDao;
 
 	@Override
-	public List<SysAuthorityEntity> getAuthesByRoleId(Integer roleId) {
+	public List<RoleAuthorityDTO> getAuthesByRoleId(Integer roleId) {
 		return sysAuthorityDao.findAuthsByRoleId(roleId);
 	}
 
@@ -33,7 +34,7 @@ public class SysAuthorityServiceImpl implements SysAuthorityService {
 	}
 	
 	@Override
-	public int queryTotal(Map<String, Object> map){
+	public Integer queryTotal(Map<String, Object> map){
 		return sysAuthorityDao.queryTotal(map);
 	}
 	
