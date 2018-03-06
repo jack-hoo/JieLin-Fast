@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -89,6 +90,14 @@ public class GlobalExceptionHandler {
         logger.error(e.getMessage());
         return ResultUtil.error(ExceptionEnum.UNAUTHORIZED_ERR.getCode(), ExceptionEnum.UNAUTHORIZED_ERR.getMessage());
     }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    @ResponseBody
+    public Result UsernameNotFoundException(UsernameNotFoundException e) {
+        logger.error(e.getMessage());
+        return ResultUtil.error(ExceptionEnum.UNAUTHORIZED_ERR.getCode(), ExceptionEnum.UNAUTHORIZED_ERR.getMessage());
+    }
+
     /**
      * 判断错误是否是已定义的已知错误，不是则由未知错误代替，同时记录在log中
      * @param e

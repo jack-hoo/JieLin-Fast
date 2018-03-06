@@ -22,6 +22,8 @@ public enum ExceptionEnum {
     PARAMS_MISSING_ERR(100004,"缺少相应参数"),
     ILLEGAL_CHARACTER(100003,"sql语句包含非法字符"),
     ARRAY_LENGTH_ZERO_ERR(100004,"数组长度不能为0"),
+
+    //权限相关
     LOGIN_ERR(400003,"登录异常"),
     UNAUTHORIZED_ERR(400001,"无权访问,请联系管理员"),
     METHOD_NOT_SUPPORTED_ERR(400000,"请求方法不被支持"),
@@ -29,7 +31,11 @@ public enum ExceptionEnum {
 
     //数据库相关自定义异常
     DATA_NOT_EXIST(600001,"数据不存在"),
-    DATA_ALREADY_EXIST(600002,"数据已经存在");
+    DATA_ALREADY_EXIST(600002,"数据已经存在"),
+
+
+    //业务异常
+    GOODS_TYPE_NOT_EXISTED(700001,"不存在的商品类目");
     private int code;
     private String message;
 

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.miner.out.jielin_fast.dao.OrderDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.miner.out.jielin_fast.entity.OrderEntity" id="orderMap">
+        <result property="orderId" column="order_id"/>
+        <result property="payer" column="payer"/>
+        <result property="accountId" column="account_id"/>
+        <result property="goodsId" column="goods_id"/>
+        <result property="orderPrice" column="order_price"/>
+        <result property="goodsQuantity" column="goods_quantity"/>
+        <result property="totalSum" column="total_sum"/>
+        <result property="orderTime" column="order_time"/>
+        <result property="orderStatus" column="order_status"/>
+        <result property="paymentTime" column="payment_time"/>
+    </resultMap>
+
+    <!--根据主键查找对象-->
+    <select id="queryObject" resultType="com.miner.out.jielin_fast.entity.OrderEntity">
+		select * from order where order_id = #{value}
+	</select>
+    <!--根据多个字段查找,返回一个对象-->
+
+
+    <!--根据多个字段查找,返回对象列表-->
+    <select id="queryList" resultType="com.miner.out.jielin_fast.entity.OrderEntity">
+        select * from `order`
+        <!--这里添加查询条件:  示例-->
+        <!--<where>
+			<if test="orgId != null">
+				a.org_id = #{orgId}
+			</if>
+			<if test="query != null and query != ''">
+				AND CONCAT(IFNULL(a.host_name,''),IFNULL(a.department,'')) like CONCAT(CONCAT('%', #{query}), '%')
+			</if>
+			<if test="hostName != null and hostName != ''">
+				AND a.host_name LIKE concat (concat('%',#{hostName}),'%')
+			</if>
+		</where>-->
+        <choose>
+            <when test="sidx != null and sidx.trim() != '' and order != null and order.trim() != ''">
+                order by `${order}` ${sidx}
+            </when>
+            <otherwise>
+                order by order_id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="queryTotal" resultType="int">
+        select count(*) from `order`
+        <!--这里添加查询条件:  示例-->
+        <!--<where>
+			<if test="orgId != null">
+				a.org_id = #{orgId}
+			</if>
+			<if test="query != null and query != ''">
+				AND CONCAT(IFNULL(a.host_name,''),IFNULL(a.department,'')) like CONCAT(CONCAT('%', #{query}), '%')
+			</if>
+			<if test="hostName != null and hostName != ''">
+				AND a.host_name LIKE concat (concat('%',#{hostName}),'%')
+			</if>
+		</where>-->
+    </select>
+    <!-- 保存 -->
+    <insert id="save" parameterType="com.miner.out.jielin_fast.entity.OrderEntity">
+        insert into `order`
+        <set>
+            <if test="payer != null">`payer` = #{payer},</if>
+            <if test="accountId != null">`account_id` = #{accountId},</if>
+            <if test="goodsId != null">`goods_id` = #{goodsId},</if>
+            <if test="orderPrice != null">`order_price` = #{orderPrice},</if>
+            <if test="goodsQuantity != null">`goods_quantity` = #{goodsQuantity},</if>
+            <if test="totalSum != null">`total_sum` = #{totalSum},</if>
+            <if test="orderTime != null">`order_time` = #{orderTime},</if>
+            <if test="orderStatus != null">`order_status` = #{orderStatus},</if>
+            <if test="paymentTime != null">`payment_time` = #{paymentTime}</if>
+        </set>
+    </insert>
+
+    <!--批量插入-->
+    <insert id="saveBatch" parameterType="java.util.List" keyProperty="id">
+        INSERT INTO `order`
+        ( `payer`, `account_id`, `goods_id`, `order_price`, `goods_quantity`, `total_sum`, `order_time`, `order_status`,
+        `payment_time` )
+        VALUES
+        <foreach collection="list" index="index" item="item" separator=",">
+            ( #{item.payer}, #{item.accountId}, #{item.goodsId}, #{item.orderPrice}, #{item.goodsQuantity},
+            #{item.totalSum}, #{item.orderTime}, #{item.orderStatus}, #{item.paymentTime} )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        `payer` = `payer`, `account_id` = `account_id`, `goods_id` = `goods_id`, `order_price` = `order_price`,
+        `goods_quantity` = `goods_quantity`, `total_sum` = `total_sum`, `order_time` = `order_time`, `order_status` =
+        `order_status`, `payment_time` = `payment_time`
+    </insert>
+
+    <update id="update" parameterType="com.miner.out.jielin_fast.entity.OrderEntity">
+        update `order`
+        <set>
+            <if test="payer != null">`payer` = #{payer
+                        },
+            </if>
+            <if test="accountId != null">`account_id` = #{accountId
+                        },
+            </if>
+            <if test="goodsId != null">`goods_id` = #{goodsId
+                        },
+            </if>
+            <if test="orderPrice != null">`order_price` = #{orderPrice
+                        },
+            </if>
+            <if test="goodsQuantity != null">`goods_quantity` = #{goodsQuantity
+                        },
+            </if>
+            <if test="totalSum != null">`total_sum` = #{totalSum
+                        },
+            </if>
+            <if test="orderTime != null">`order_time` = #{orderTime
+                        },
+            </if>
+            <if test="orderStatus != null">`order_status` = #{orderStatus
+                        },
+            </if>
+            <if test="paymentTime != null">`payment_time` = #{paymentTime
+                        }
+            </if>
+        </set>
+        where order_id = #{orderId}
+    </update>
+
+    <delete id="delete">
+		delete from `order` where order_id = #{value}
+	</delete>
+
+    <delete id="deleteBatch">
+        delete from `order` where order_id in
+        <foreach item="orderId" collection="array" open="(" separator="," close=")">
+            #{orderId}
+        </foreach>
+    </delete>
+    <!--用户批量删除资源删除-->
+    <delete id="deleteOfMine">
+        DELETE FROM `order` WHERE account_id = #{accountId,jdbcType=INTEGER} AND order_id IN
+        <foreach item="orderId" collection="ids" open="(" separator="," close=")">
+            #{orderId}
+        </foreach>
+    </delete>
+
+</mapper>

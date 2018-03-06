@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.miner.out.jielin_fast.dao.GoodsTypeDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.miner.out.jielin_fast.entity.GoodsTypeEntity" id="goodsTypeMap">
+        <result property="id" column="id"/>
+        <result property="category" column="category"/>
+        <result property="accountId" column="account_id"/>
+        <result property="order" column="order"/>
+    </resultMap>
+
+    <!--根据主键查找对象-->
+    <select id="queryObject" resultType="com.miner.out.jielin_fast.entity.GoodsTypeEntity">
+		select * from goods_type where id = #{value}
+	</select>
+    <!--根据多个字段查找,返回一个对象-->
+
+
+    <!--根据多个字段查找,返回对象列表-->
+    <select id="queryList" resultType="com.miner.out.jielin_fast.entity.GoodsTypeEntity">
+        select * from goods_type
+        <where>
+            <if test="accountId != null">
+                account_id = #{accountId}
+            </if>
+        </where>
+        <!--这里添加查询条件:  示例-->
+        <!--<where>
+			<if test="orgId != null">
+				a.org_id = #{orgId}
+			</if>
+			<if test="query != null and query != ''">
+				AND CONCAT(IFNULL(a.host_name,''),IFNULL(a.department,'')) like CONCAT(CONCAT('%', #{query}), '%')
+			</if>
+			<if test="hostName != null and hostName != ''">
+				AND a.host_name LIKE concat (concat('%',#{hostName}),'%')
+			</if>
+		</where>-->
+        <choose>
+            <when test="sidx != null and sidx.trim() != '' and order != null and order.trim() != ''">
+                order by `${order}` ${sidx}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="queryTotal" resultType="int">
+        select count(*) from goods_type
+        <where>
+            <if test="accountId != null">
+                account_id = #{accountId}
+            </if>
+        </where>
+        <!--这里添加查询条件:  示例-->
+        <!--<where>
+			<if test="orgId != null">
+				a.org_id = #{orgId}
+			</if>
+			<if test="query != null and query != ''">
+				AND CONCAT(IFNULL(a.host_name,''),IFNULL(a.department,'')) like CONCAT(CONCAT('%', #{query}), '%')
+			</if>
+			<if test="hostName != null and hostName != ''">
+				AND a.host_name LIKE concat (concat('%',#{hostName}),'%')
+			</if>
+		</where>-->
+    </select>
+    <!-- 保存 -->
+    <insert id="save" parameterType="com.miner.out.jielin_fast.entity.GoodsTypeEntity" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into goods_type
+        <set>
+            <if test="category != null">`category` = #{category},</if>
+            <if test="accountId != null">`account_id` = #{accountId},</if>
+            <if test="order != null">`order` = #{order}</if>
+        </set>
+    </insert>
+
+    <!--批量插入-->
+    <insert id="saveBatch" parameterType="java.util.List" keyProperty="id">
+        INSERT INTO goods_type
+        ( `category`, `account_id`, `order` )
+        VALUES
+        <foreach collection="list" index="index" item="item" separator=",">
+            ( #{item.category}, #{item.accountId}, #{item.order} )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        `category` = `category`, `account_id` = `account_id`, `order` = `order`
+    </insert>
+
+    <update id="update" parameterType="com.miner.out.jielin_fast.entity.GoodsTypeEntity">
+        update goods_type
+        <set>
+            <if test="category != null">`category` = #{category},
+            </if>
+            <if test="accountId != null">`account_id` = #{accountId},
+            </if>
+            <if test="order != null">`order` = #{order}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+		delete from goods_type where id = #{value}
+	</delete>
+
+    <delete id="deleteBatch">
+        delete from goods_type where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <!--用户批量删除资源删除-->
+    <delete id="deleteOfMine">
+        DELETE FROM goods_type WHERE account_id = #{accountId,jdbcType=INTEGER} AND id IN
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

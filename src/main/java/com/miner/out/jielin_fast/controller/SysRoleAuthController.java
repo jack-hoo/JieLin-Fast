@@ -9,6 +9,7 @@ import com.miner.out.jielin_fast.entity.SysAuthorityEntity;
 import com.miner.out.jielin_fast.service.SysAuthorityService;
 import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.miner.out.jielin_fast.entity.SysRoleAuthEntity;
@@ -26,6 +27,7 @@ import com.miner.out.jielin_fast.common.utils.Result;
  */
 @RestController
 @RequestMapping("/role_auth")
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class SysRoleAuthController {
     @Autowired
     private SysRoleAuthService sysRoleAuthService;

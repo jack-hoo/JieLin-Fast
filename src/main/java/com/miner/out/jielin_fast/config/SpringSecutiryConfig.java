@@ -81,6 +81,8 @@ public class SpringSecutiryConfig extends WebSecurityConfigurerAdapter{
                 .addFilter(jWTAuthenticationFilter())
                 .authorizeRequests()
                 .antMatchers("/auth/**").permitAll()
+                .antMatchers("/pay/**").permitAll()
+                .antMatchers("/notify/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .headers().cacheControl()

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.miner.out.jielin_fast.dao.GoodsDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.miner.out.jielin_fast.entity.GoodsEntity" id="goodsMap">
+                    <result property="id" column="id"/>
+                    <result property="accountId" column="account_id"/>
+                    <result property="goodsTypeId" column="goods_type_id"/>
+                    <result property="goodsName" column="goods_name"/>
+                    <result property="goodsCostPrice" column="goods_cost_price"/>
+                    <result property="goodsRecPrice" column="goods_rec_price"/>
+                    <result property="totalStockQuantity" column="total_stock_quantity"/>
+            </resultMap>
+
+    <!--根据主键查找对象-->
+    <select id="queryObject" resultType="com.miner.out.jielin_fast.entity.GoodsEntity">
+		select * from goods where id = #{value}
+	</select>
+    <!--根据多个字段查找,返回一个对象-->
+
+
+    <!--根据多个字段查找,返回对象列表-->
+    <select id="queryList" resultType="com.miner.out.jielin_fast.entity.GoodsEntity">
+        select * from goods
+        <!--这里添加查询条件:  示例-->
+        <!--<where>
+			<if test="orgId != null">
+				a.org_id = #{orgId}
+			</if>
+			<if test="query != null and query != ''">
+				AND CONCAT(IFNULL(a.host_name,''),IFNULL(a.department,'')) like CONCAT(CONCAT('%', #{query}), '%')
+			</if>
+			<if test="hostName != null and hostName != ''">
+				AND a.host_name LIKE concat (concat('%',#{hostName}),'%')
+			</if>
+		</where>-->
+        <choose>
+            <when test="sidx != null and sidx.trim() != '' and order != null and order.trim() != ''">
+                order by `${order}` ${sidx}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="queryTotal" resultType="int">
+        select count(*) from goods
+        <!--这里添加查询条件:  示例-->
+        <!--<where>
+			<if test="orgId != null">
+				a.org_id = #{orgId}
+			</if>
+			<if test="query != null and query != ''">
+				AND CONCAT(IFNULL(a.host_name,''),IFNULL(a.department,'')) like CONCAT(CONCAT('%', #{query}), '%')
+			</if>
+			<if test="hostName != null and hostName != ''">
+				AND a.host_name LIKE concat (concat('%',#{hostName}),'%')
+			</if>
+		</where>-->
+    </select>
+    <!-- 保存 -->
+    <insert id="save" parameterType="com.miner.out.jielin_fast.entity.GoodsEntity"            useGeneratedKeys="true" keyProperty="id">
+        insert into goods
+        <set>
+                                                                            <if test="accountId != null">`account_id` = #{accountId},                     </if>
+                                                                <if test="goodsTypeId != null">`goods_type_id` = #{goodsTypeId},                     </if>
+                                                                <if test="goodsName != null">`goods_name` = #{goodsName},                     </if>
+                                                                <if test="goodsCostPrice != null">`goods_cost_price` = #{goodsCostPrice},                     </if>
+                                                                <if test="goodsRecPrice != null">`goods_rec_price` = #{goodsRecPrice},                     </if>
+                                                                <if test="totalStockQuantity != null">`total_stock_quantity` = #{totalStockQuantity}                    </if>
+                                    </set>
+    </insert>
+
+    <!--批量插入-->
+    <insert id="saveBatch" parameterType="java.util.List" keyProperty="id">
+        INSERT INTO goods
+        (                                                `account_id`,                                                 `goods_type_id`,                                                 `goods_name`,                                                 `goods_cost_price`,                                                 `goods_rec_price`,                                                 `total_stock_quantity`                    )
+        VALUES
+        <foreach collection="list" index="index" item="item" separator=",">
+            (                                                                #{item.accountId},                                                                 #{item.goodsTypeId},                                                                 #{item.goodsName},                                                                 #{item.goodsCostPrice},                                                                 #{item.goodsRecPrice},                                                                 #{item.totalStockQuantity}                            )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+                                                        `account_id` = `account_id`,                                                 `goods_type_id` = `goods_type_id`,                                                 `goods_name` = `goods_name`,                                                 `goods_cost_price` = `goods_cost_price`,                                                 `goods_rec_price` = `goods_rec_price`,                                                 `total_stock_quantity` = `total_stock_quantity`                        </insert>
+
+    <update id="update" parameterType="com.miner.out.jielin_fast.entity.GoodsEntity">
+        update goods
+        <set>
+                                                                            <if test="accountId != null">`account_id` = #{accountId
+                        }, </if>
+                                                                <if test="goodsTypeId != null">`goods_type_id` = #{goodsTypeId
+                        }, </if>
+                                                                <if test="goodsName != null">`goods_name` = #{goodsName
+                        }, </if>
+                                                                <if test="goodsCostPrice != null">`goods_cost_price` = #{goodsCostPrice
+                        }, </if>
+                                                                <if test="goodsRecPrice != null">`goods_rec_price` = #{goodsRecPrice
+                        }, </if>
+                                                                <if test="totalStockQuantity != null">`total_stock_quantity` = #{totalStockQuantity
+                        }</if>
+                                    </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+		delete from goods where id = #{value}
+	</delete>
+
+    <delete id="deleteBatch">
+        delete from goods where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <!--用户批量删除资源删除-->
+    <delete id="deleteOfMine">
+        DELETE FROM goods WHERE account_id = #{accountId,jdbcType=INTEGER} AND id IN
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

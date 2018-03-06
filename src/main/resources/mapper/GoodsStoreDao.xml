@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.miner.out.jielin_fast.dao.GoodsStoreDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.miner.out.jielin_fast.entity.GoodsStoreEntity" id="goodsStoreMap">
+        <result property="id" column="id"/>
+        <result property="accountId" column="account_id"/>
+        <result property="goodsId" column="goods_id"/>
+        <result property="goodsName" column="goods_name"/>
+        <result property="quantity" column="quantity"/>
+        <result property="createTime" column="create_time"/>
+        <result property="opTime" column="op_time"/>
+    </resultMap>
+
+    <!--根据主键查找对象-->
+    <select id="queryObject" resultType="com.miner.out.jielin_fast.entity.GoodsStoreEntity">
+		select * from goods_store where id = #{value}
+	</select>
+    <!--根据多个字段查找,返回一个对象-->
+
+
+    <!--根据多个字段查找,返回对象列表-->
+    <select id="queryList" resultType="com.miner.out.jielin_fast.entity.GoodsStoreEntity">
+        select * from goods_store
+        <!--这里添加查询条件:  示例-->
+        <!--<where>
+			<if test="orgId != null">
+				a.org_id = #{orgId}
+			</if>
+			<if test="query != null and query != ''">
+				AND CONCAT(IFNULL(a.host_name,''),IFNULL(a.department,'')) like CONCAT(CONCAT('%', #{query}), '%')
+			</if>
+			<if test="hostName != null and hostName != ''">
+				AND a.host_name LIKE concat (concat('%',#{hostName}),'%')
+			</if>
+		</where>-->
+        <choose>
+            <when test="sidx != null and sidx.trim() != '' and order != null and order.trim() != ''">
+                order by `${order}` ${sidx}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="queryTotal" resultType="int">
+        select count(*) from goods_store
+        <!--这里添加查询条件:  示例-->
+        <!--<where>
+			<if test="orgId != null">
+				a.org_id = #{orgId}
+			</if>
+			<if test="query != null and query != ''">
+				AND CONCAT(IFNULL(a.host_name,''),IFNULL(a.department,'')) like CONCAT(CONCAT('%', #{query}), '%')
+			</if>
+			<if test="hostName != null and hostName != ''">
+				AND a.host_name LIKE concat (concat('%',#{hostName}),'%')
+			</if>
+		</where>-->
+    </select>
+    <!-- 保存 -->
+    <insert id="save" parameterType="com.miner.out.jielin_fast.entity.GoodsStoreEntity" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into goods_store
+        <set>
+            <if test="accountId != null">`account_id` = #{accountId},</if>
+            <if test="goodsId != null">`goods_id` = #{goodsId},</if>
+            <if test="goodsName != null">`goods_name` = #{goodsName},</if>
+            <if test="quantity != null">`quantity` = #{quantity},</if>
+            <if test="createTime != null">`create_time` = #{createTime},</if>
+            <if test="opTime != null">`op_time` = #{opTime}</if>
+        </set>
+    </insert>
+
+    <!--批量插入-->
+    <insert id="saveBatch" parameterType="java.util.List" keyProperty="id">
+        INSERT INTO goods_store
+        ( `account_id`, `goods_id`, `goods_name`, `quantity`, `create_time`, `op_time` )
+        VALUES
+        <foreach collection="list" index="index" item="item" separator=",">
+            ( #{item.accountId}, #{item.goodsId}, #{item.goodsName}, #{item.quantity}, #{item.createTime},
+            #{item.opTime} )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        `account_id` = `account_id`, `goods_id` = `goods_id`, `goods_name` = `goods_name`, `quantity` = `quantity`,
+        `create_time` = `create_time`, `op_time` = `op_time`
+    </insert>
+
+    <update id="update" parameterType="com.miner.out.jielin_fast.entity.GoodsStoreEntity">
+        update goods_store
+        <set>
+            <if test="accountId != null">`account_id` = #{accountId
+                        },
+            </if>
+            <if test="goodsId != null">`goods_id` = #{goodsId
+                        },
+            </if>
+            <if test="goodsName != null">`goods_name` = #{goodsName
+                        },
+            </if>
+            <if test="quantity != null">`quantity` = #{quantity
+                        },
+            </if>
+            <if test="createTime != null">`create_time` = #{createTime
+                        },
+            </if>
+            <if test="opTime != null">`op_time` = #{opTime
+                        }
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+		delete from goods_store where id = #{value}
+	</delete>
+
+    <delete id="deleteBatch">
+        delete from goods_store where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <!--用户批量删除资源删除-->
+    <delete id="deleteOfMine">
+        DELETE FROM goods_store WHERE account_id = #{accountId,jdbcType=INTEGER} AND id IN
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

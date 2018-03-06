@@ -8,6 +8,8 @@
 package com.miner.out.jielin_fast.config;
 
 import com.miner.out.jielin_fast.common.filters.XssFilter;
+import com.miner.out.jielin_fast.service.SysUserService;
+import com.miner.out.jielin_fast.service.impl.SysUserServiceImpl;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,5 +34,10 @@ public class XSSFilterConfig {
         registration.setName("xssFilter");
         registration.setOrder(Integer.MAX_VALUE);
         return registration;
+    }
+
+    @Bean
+    public SysUserService sysUserService() {
+        return new SysUserServiceImpl();
     }
 }

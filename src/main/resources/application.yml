@@ -6,8 +6,11 @@ server:
       min-spare-threads: 30
   port: 8787
   connection-timeout: 5000
+
   error:
     path: /test
+  context:
+    url:  http://home/xxpay/service/cert
   #context-path: /yinliu
   #servlet-path: /go
 banner:
@@ -28,7 +31,8 @@ spring:
             max-request-size: 100MB
             enabled: true
     resources: # 指定静态资源的路径
-        static-locations: classpath:/static/,classpath:/views/
+        static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,classpath:templates/
+
     redis:
         open: false  # 是否开启redis缓存  true开启   false关闭
         database: 0
@@ -43,6 +47,8 @@ spring:
             min-idle: 5       # 连接池中的最小空闲连接
     messages:
       encoding: utf-8
+    mvc:
+      static-path-pattern: /**
 
 # Mybatis配置
 mybatis:
@@ -67,3 +73,14 @@ jwt:
 #    name: jack
 #    password: 123456
 #  ignored: /**
+
+##支付回调
+
+alipay:
+  notify:
+      url:  http://api.xxpay.org/notify/pay/aliPayNotifyRes.htm
+wexinpay:
+  notify:
+      url:  http://home/xxpay/service/cert
+
+

@@ -7,6 +7,7 @@
  */
 package com.miner.out.jielin_fast.service.impl;
 
+import com.miner.out.jielin_fast.common.exception.BizException;
 import com.miner.out.jielin_fast.common.utils.UserDetailsUtil;
 import com.miner.out.jielin_fast.dao.SysAuthorityDao;
 import com.miner.out.jielin_fast.dao.SysRoleDao;
@@ -44,7 +45,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String account) throws UsernameNotFoundException {
         SysUserEntity user = sysUserDao.queryByAccount(account);
         if (user == null) {
-            throw new UsernameNotFoundException(account);
+            throw new BizException("无权访问,请登录后再试", 40003);
+            //throw new UsernameNotFoundException(account);
         }
         //通过角色id找到角色信息
         SysRoleEntity sysRoleEntity = sysRoleDao.queryObject(user.getRoleId());
